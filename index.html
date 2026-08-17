@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topsail — Sailing Simulator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="sea"></canvas>
+
+  <div id="hud">
+    <div id="stats" class="panel">
+      <div class="title">Helm</div>
+      <div class="row"><span>Speed</span><b id="stat-speed">0.0 kn</b></div>
+      <div class="row"><span>Heading</span><b id="stat-heading">—</b></div>
+      <div class="row"><span>Point of sail</span><b id="stat-pos">—</b></div>
+      <div class="row"><span>Sail angle</span><b id="stat-sail">—</b></div>
+      <div class="row"><span>Apparent wind</span><b id="stat-appwind">—</b></div>
+      <div class="row"><span>Airflow</span><b id="stat-airflow">—</b></div>
+      <div class="flowbar"><div class="flowfill" id="flow-fill"></div></div>
+      <div class="row"><span>Leeway</span><b id="stat-leeway">—</b></div>
+      <div class="hint" id="stat-hint"></div>
+    </div>
+
+    <div id="wind" class="panel">
+      <div class="title">Wind</div>
+      <div class="windrow">
+        <div id="wind-arrow"></div>
+        <div class="windtext">
+          <b id="wind-speed">0.0 kn</b>
+          <span id="wind-dir">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="controls" class="panel">
+      <div class="title">Conditions &amp; Controls</div>
+      <label>Wind speed
+        <input id="ctrl-wspeed" type="range" min="0" max="30" step="0.5" value="12">
+        <span id="ctrl-wspeed-val">12 kn</span>
+      </label>
+      <label>Wind direction (from)
+        <input id="ctrl-wdir" type="range" min="0" max="360" step="1" value="90">
+        <span id="ctrl-wdir-val">E</span>
+      </label>
+      <div class="btns">
+        <button id="btn-tack">Tack (T)</button>
+        <button id="btn-reset">Reset (R)</button>
+        <button id="btn-pause">Pause (P)</button>
+        <label class="check"><input id="ctrl-mouse" type="checkbox"> Mouse steer</label>
+      </div>
+      <div class="help">
+        <span>◀ ▶ / A D — rudder</span>
+        <span>▲ ▼ / W S — trim sail</span>
+      </div>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <div id="rotate-overlay">
+    <div class="rotate-inner">
+      <div class="rotate-icon"></div>
+      <p>Rotate your device to <b>landscape</b> to play</p>
+    </div>
+  </div>
+
+  <script src="js/physics.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
