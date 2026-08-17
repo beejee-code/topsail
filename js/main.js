@@ -55,7 +55,6 @@
 
   var windArrow = document.getElementById("wind-arrow");
   var windSpeedEl = document.getElementById("wind-speed");
-  var windDirEl = document.getElementById("wind-dir");
 
   var wspeedSlider = document.getElementById("ctrl-wspeed");
   var wspeedVal = document.getElementById("ctrl-wspeed-val");
@@ -109,8 +108,7 @@
     var deg = parseFloat(wdirSlider.value);
     wind.direction = (deg + 90) * DEG;
     wind.speed = S.knotsToMs(parseFloat(wspeedSlider.value));
-    windDirEl.textContent = compassLabel(deg) + " (" + deg + "\u00B0)";
-    windSpeedEl.textContent = wspeedSlider.value + " kn";
+    windSpeedEl.textContent = wspeedSlider.value;
     wspeedVal.textContent = wspeedSlider.value + " kn";
     wdirVal.textContent = compassLabel(deg);
   }

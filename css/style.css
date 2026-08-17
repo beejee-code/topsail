@@ -98,13 +98,13 @@ html, body {
 #wind {
   top: 14px;
   right: 14px;
-  min-width: 150px;
+  padding: 8px;
+  min-width: 0;
 }
 
-.windrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+#wind .title {
+  text-align: center;
+  margin-bottom: 4px;
 }
 
 #wind-arrow {
@@ -114,6 +114,12 @@ html, body {
   border: 1px solid rgba(150, 200, 235, 0.35);
   background: rgba(20, 48, 76, 0.6);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  margin: 0 auto;
 }
 
 #wind-arrow::before {
@@ -131,13 +137,23 @@ html, body {
   transition: transform 0.4s linear;
 }
 
-.windtext {
-  display: flex;
-  flex-direction: column;
+#wind-speed {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #eaf4fc;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  line-height: 1;
 }
 
-.windtext b { font-size: 17px; }
-.windtext span { font-size: 12px; color: #a9c2d6; }
+#wind-unit {
+  position: relative;
+  z-index: 1;
+  font-size: 9px;
+  color: #a9c2d6;
+  line-height: 1;
+}
 
 #controls {
   bottom: 14px;
@@ -378,7 +394,6 @@ html, body {
 @media (max-width: 640px) {
   #controls { display: none; }
   #stats { min-width: 150px; font-size: 11px; }
-  #wind { min-width: 120px; }
 }
 
 @media (orientation: portrait) and (pointer: coarse) {
