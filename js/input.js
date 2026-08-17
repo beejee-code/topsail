@@ -26,6 +26,9 @@
       mouse: false
     };
 
+    var touchRudder = 0;
+    var touchSail = 0;
+
     window.addEventListener("keydown", function (e) {
       var mapped = KEYMAP[e.code];
       if (mapped) {
@@ -45,6 +48,10 @@
     function controls() {
       var rudder = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
       var sail = (keys.sailOut ? 1 : 0) - (keys.sailIn ? 1 : 0);
+
+      if (touchRudder !== 0) rudder = touchRudder;
+      if (touchSail !== 0) sail = touchSail;
+
       return { rudder: rudder, sail: sail };
     }
 
@@ -57,7 +64,9 @@
     return {
       controls: controls,
       consume: consume,
-      setMouseSteer: function (v) { actions.mouse = v; }
+      setMouseSteer: function (v) { actions.mouse = v; },
+      setTouchRudder: function (v) { touchRudder = Math.max(-1, Math.min(1, v)); },
+      setTouchSail: function (v) { touchSail = Math.max(-1, Math.min(1, v)); }
     };
   }
 

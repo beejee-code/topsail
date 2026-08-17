@@ -272,7 +272,115 @@ html, body {
   50% { transform: rotate(90deg); }
 }
 
+#touch-controls {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.touch-ctrl {
+  pointer-events: auto;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#touch-tiller {
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#touch-sheet {
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#touch-actions {
+  pointer-events: auto;
+  position: absolute;
+  bottom: 88px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.touch-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #7fb4dc;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.touch-track {
+  position: relative;
+  background: rgba(150, 200, 235, 0.12);
+  border-radius: 4px;
+  touch-action: none;
+}
+
+#touch-tiller .touch-track {
+  width: 220px;
+  height: 8px;
+}
+
+#touch-sheet .touch-track {
+  width: 8px;
+  height: 180px;
+}
+
+.touch-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(77, 163, 224, 0.35);
+  border: 2px solid rgba(77, 163, 224, 0.7);
+  touch-action: none;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.touch-thumb.active {
+  background: rgba(77, 163, 224, 0.65);
+  border-color: #4da3e0;
+  box-shadow: 0 0 12px rgba(77, 163, 224, 0.5);
+}
+
+#touch-actions button {
+  background: rgba(8, 24, 40, 0.85);
+  border: 1px solid rgba(150, 200, 235, 0.22);
+  border-radius: 8px;
+  color: #dbeaf7;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 80px;
+  cursor: pointer;
+}
+
+#touch-actions button:active {
+  background: rgba(77, 163, 224, 0.3);
+}
+
 @media (max-width: 640px) {
   #controls { display: none; }
-  #stats { min-width: 170px; font-size: 12px; }
+  #stats { min-width: 150px; font-size: 11px; }
+  #wind { min-width: 120px; }
+}
+
+@media (orientation: portrait) and (pointer: coarse) {
+  #touch-controls.active { display: block; }
 }

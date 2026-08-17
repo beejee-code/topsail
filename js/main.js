@@ -68,25 +68,25 @@
 
   var msgTimer = null;
 
-  var rotateOverlay = document.getElementById("rotate-overlay");
+  var touchControls = document.getElementById("touch-controls");
   var portraitMq = window.matchMedia ? window.matchMedia("(orientation: portrait)") : null;
 
-  function isMobileDevice() {
+  function isMobilePortrait() {
+    if (!portraitMq) return false;
     var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
     var touch = navigator.maxTouchPoints > 0 || "ontouchstart" in window;
-    return !!coarse && !!touch;
+    return !!coarse && !!touch && portraitMq.matches;
   }
 
-  function updateRotateOverlay() {
-    if (!rotateOverlay) return;
-    var show = isMobileDevice() && (!portraitMq || portraitMq.matches);
-    rotateOverlay.classList.toggle("show", show);
+  function updateTouchControls() {
+    if (!touchControls) return;
+    touchControls.classList.toggle("active", isMobilePortrait());
   }
 
-  if (portraitMq && portraitMq.addEventListener) portraitMq.addEventListener("change", updateRotateOverlay);
-  window.addEventListener("resize", updateRotateOverlay);
-  window.addEventListener("orientationchange", updateRotateOverlay);
-  updateRotateOverlay();
+  if (portraitMq && portraitMq.addEventListener) portraitMq.addEventListener("change", updateTouchControls);
+  window.addEventListener("resize", updateTouchControls);
+  window.addEventListener("orientationchange", updateTouchControls);
+  updateTouchControls();
 
   function showMessage(text, ms) {
     el.message.textContent = text;
@@ -225,6 +225,92 @@
   });
   wspeedSlider.addEventListener("input", updateWind);
   wdirSlider.addEventListener("input", updateWind);
+
+  var touchTack = document.getElementById("touch-tack");
+  var touchReset = document.getElementById("touch-reset");
+  if (touchTack) touchTack.addEventListener("click", tack);
+  if (touchReset) touchReset.addEventListener("click", reset);
+
+  function setupTouchControls() {
+    var tillerEl = document.getElementById("touch-tiller");
+    var tillerTrack = tillerEl ? tillerEl.querySelector(".touch-track") : null;
+    var tillerThumb = document.getElementById("tiller-thumb");
+    var sheetEl = document.getElementById("touch-sheet");
+    var sheetTrack = sheetEl ? sheetEl.querySelector(".touch-track") : null;
+    var sheetThumb = document.getElementById("sheet-thumb");
+    if (!tillerTrack || !sheetTrack) return;
+
+    var tillerTouchId = null;
+    var sheetTouchId = null;
+
+    function handleTiller(touch) {
+      var rect = tillerTrack.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var val = Math.max(-1, Math.min(1, (touch.clientX - cx) / (rect.width / 2)));
+      input.setTouchRudder(val);
+      if (tillerThumb) tillerThumb.style.left = ((val + 1) / 2 * 100) + "%";
+    }
+
+    function handleSheet(touch) {
+      var rect = sheetTrack.getBoundingClientRect();
+      var cy = rect.top + rect.height / 2;
+      var val = Math.max(-1, Math.min(1, (touch.clientY - cy) / (rect.height / 2)));
+      input.setTouchSail(val);
+      if (sheetThumb) sheetThumb.style.top = ((val + 1) / 2 * 100) + "%";
+    }
+
+    tillerTrack.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      tillerTouchId = e.changedTouches[0].identifier;
+      handleTiller(e.changedTouches[0]);
+      if (tillerThumb) tillerThumb.classList.add("active");
+    }, { passive: false });
+
+    sheetTrack.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      sheetTouchId = e.changedTouches[0].identifier;
+      handleSheet(e.changedTouches[0]);
+      if (sheetThumb) sheetThumb.classList.add("active");
+    }, { passive: false });
+
+    document.addEventListener("touchmove", function (e) {
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var t = e.changedTouches[i];
+        if (t.identifier === tillerTouchId) { e.preventDefault(); handleTiller(t); }
+        else if (t.identifier === sheetTouchId) { e.preventDefault(); handleSheet(t); }
+      }
+    }, { passive: false });
+
+    function releaseTiller() {
+      tillerTouchId = null;
+      input.setTouchRudder(0);
+      if (tillerThumb) { tillerThumb.style.left = "50%"; tillerThumb.classList.remove("active"); }
+    }
+
+    function releaseSheet() {
+      sheetTouchId = null;
+      input.setTouchSail(0);
+      if (sheetThumb) { sheetThumb.style.top = "50%"; sheetThumb.classList.remove("active"); }
+    }
+
+    document.addEventListener("touchend", function (e) {
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var t = e.changedTouches[i];
+        if (t.identifier === tillerTouchId) releaseTiller();
+        else if (t.identifier === sheetTouchId) releaseSheet();
+      }
+    });
+
+    document.addEventListener("touchcancel", function (e) {
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var t = e.changedTouches[i];
+        if (t.identifier === tillerTouchId) releaseTiller();
+        else if (t.identifier === sheetTouchId) releaseSheet();
+      }
+    });
+  }
+
+  setupTouchControls();
 
   updateWind();
   updateHud();
