@@ -16,6 +16,7 @@
   var mouseSteer = false;
   var mouse = { x: 0, y: 0 };
   var dockCount = 0;
+  var gameOver = false;
 
   var DOCK_SPEED = 2;
   var island = { x: 0, y: 0, radius: 10 };
