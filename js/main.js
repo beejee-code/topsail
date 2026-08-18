@@ -47,7 +47,7 @@
   }
 
   var el = {};
-  ["speed", "heading", "pos", "sail", "appwind", "airflow", "leeway", "hint", "message"].forEach(function (id) {
+  ["speed", "heading", "pos", "airflow", "hint", "message"].forEach(function (id) {
     el[id] = document.getElementById("stat-" + id) || document.getElementById(id);
   });
 
@@ -127,9 +127,6 @@
     el.speed.textContent = info.speedKn.toFixed(1) + " kn";
     el.heading.textContent = headingLabel(state.heading);
     el.pos.textContent = POINTS_OF_SAIL[info.pointOfSail] || info.pointOfSail;
-    el.sail.textContent = Math.abs(info.sailDeg).toFixed(0) + "\u00B0 " + (info.sailDeg >= 0 ? "stbd" : "port");
-    el.appwind.textContent = appWindLabel(info.apparentDeg) + " \u00B7 " + info.apparentSpeedKn.toFixed(1) + " kn";
-    el.leeway.textContent = (Math.abs(info.leewayDeg) < 0.05 ? "0" : info.leewayDeg.toFixed(1)) + "\u00B0";
 
     var hint = coachingHint(info);
     el.hint.textContent = hint;
