@@ -15,6 +15,10 @@
   var paused = false;
   var mouseSteer = false;
   var mouse = { x: 0, y: 0 };
+  var dockCount = 0;
+
+  var DOCK_SPEED = 2;
+  var island = { x: 0, y: 0, radius: 10 };
 
   var POINTS_OF_SAIL = {
     "no-go": "In irons",
@@ -52,6 +56,9 @@
   });
 
   var flowFill = document.getElementById("flow-fill");
+
+  var navArrowIcon = document.getElementById("nav-arrow-icon");
+  var navDistEl = document.getElementById("nav-arrow-dist");
 
   var windArrow = document.getElementById("wind-arrow");
   var windSpeedEl = document.getElementById("wind-speed");
@@ -104,6 +111,32 @@
     showMessage("Reset", 800);
   }
 
+  function spawnIsland() {
+    var angle = Math.random() * Math.PI * 2;
+    var dist = 300 + Math.random() * 200;
+    island.x = state.x + Math.cos(angle) * dist;
+    island.y = state.y + Math.sin(angle) * dist;
+  }
+
+  function checkIsland() {
+    var dx = state.x - island.x;
+    var dy = state.y - island.y;
+    var dist = Math.hypot(dx, dy);
+    if (dist >= island.radius) return;
+
+    var speedKn = Math.hypot(state.vx, state.vy) * 1.943844492;
+    if (speedKn < DOCK_SPEED) {
+      dockCount++;
+      showMessage("Docked! (" + dockCount + ")", 1800);
+      spawnIsland();
+    } else {
+      dockCount = 0;
+      showMessage("Shipwrecked!", 2000);
+      state = S.createState(INITIAL);
+      spawnIsland();
+    }
+  }
+
   function updateWind() {
     var deg = parseFloat(wdirSlider.value);
     wind.direction = (deg + 90) * DEG;
@@ -139,6 +172,15 @@
 
     var targetRot = bearing(wind.direction);
     windArrow.style.transform = "rotate(" + targetRot + "deg)";
+
+    if (navArrowIcon && island) {
+      var dx = island.x - state.x;
+      var dy = island.y - state.y;
+      var dist = Math.hypot(dx, dy);
+      var deg = (Math.atan2(dy, dx) / DEG + 90 + 360) % 360;
+      navArrowIcon.style.transform = "rotate(" + deg + "deg)";
+      navDistEl.textContent = Math.round(dist) + " m";
+    }
   }
 
   function airflowQuality(info) {
@@ -186,7 +228,7 @@
     }
 
     if (paused) {
-      renderer.render(state, wind, 0);
+      renderer.render(state, wind, 0, island);
       updateHud();
       return;
     }
@@ -200,7 +242,8 @@
       acc -= STEP;
     }
 
-    renderer.render(state, wind, dt);
+    checkIsland();
+    renderer.render(state, wind, dt, island);
     updateHud();
   }
 
@@ -307,6 +350,7 @@
 
   setupTouchControls();
 
+  spawnIsland();
   updateWind();
   updateHud();
   requestAnimationFrame(loop);

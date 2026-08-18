@@ -193,6 +193,35 @@
       }
     }
 
+    function drawIsland(island) {
+      if (!island) return;
+      var p = worldToScreen(island.x, island.y);
+      var r = island.radius * scale;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r * 1.15, 0, TAU);
+      ctx.fillStyle = "rgba(160,210,240,0.15)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, TAU);
+      ctx.fillStyle = "#d4b896";
+      ctx.fill();
+      ctx.strokeStyle = "#b8956a";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y - r * 0.1, r * 0.6, 0, TAU);
+      ctx.fillStyle = "#3a8c4a";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x - r * 0.12, p.y - r * 0.28, r * 0.22, 0, TAU);
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      ctx.fill();
+    }
+
     function drawBoat(state) {
       var p = worldToScreen(state.x, state.y);
       ctx.save();
@@ -263,7 +292,7 @@
       ctx.restore();
     }
 
-    function render(state, wind, dt) {
+    function render(state, wind, dt, island) {
       time += dt;
       cam.x += (state.x - cam.x) * Math.min(1, dt * 4);
       cam.y += (state.y - cam.y) * Math.min(1, dt * 4);
@@ -272,6 +301,7 @@
 
       spawnWake(state);
       drawWater();
+      drawIsland(island);
       drawNoGoWedge(state, wind);
       drawWake(dt);
       drawBoat(state);
